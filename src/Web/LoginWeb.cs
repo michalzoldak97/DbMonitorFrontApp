@@ -7,14 +7,22 @@ namespace D1
 {
     public class LoginWeb : MonoBehaviour
     {
+        private Screen reqOrigin;
         private LoginVerifier loginVerifier = new LoginVerifier();
         private bool isLogInProgress = false;
 
-        private IEnumerator SendLogIn(string email, string pass, Screen origin)
+        private byte[] ParseInput(string email, string pass)
         {
-            string jsonData = "{\n    \"email\": \"" + email + "\",\n    \"password\": \"" + pass + "\"\n}";
+            Dictionary<string, string> dictToParse = new Dictionary<string, string>();
+            dictToParse.Add("email", email);
+            dictToParse.Add("password", pass);
+            StringJSONParser jSONParser = new StringJSONParser(dictToParse);
+            return jSONParser.StringToRaw();
+        }
+
+        private IEnumerator SendLogIn(byte[] reqJSON)
+        {
             yield return new WaitForSeconds(1f);
-            Debug.Log(jsonData);
         }
         public string LoginAttempt(string email, string pass, Screen origin)
         {
@@ -29,7 +37,8 @@ namespace D1
             }
             else
             {
-                StartCoroutine(SendLogIn(email, pass, origin));
+                reqOrigin = origin;
+                StartCoroutine(SendLogIn(ParseInput(email, pass)));
                 return "Succes: Attempt started";
             }
         }
