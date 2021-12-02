@@ -7,9 +7,15 @@ namespace D1
 {
     public class LoginWeb : MonoBehaviour
     {
+        private bool isLogInProgress = false;
         private Screen reqOrigin;
         private LoginVerifier loginVerifier = new LoginVerifier();
-        private bool isLogInProgress = false;
+
+        private void FinishProcess()
+        {
+            isLogInProgress = false;
+            Destroy(this);
+        }
 
         private byte[] ParseInput(string email, string pass)
         {
@@ -22,7 +28,25 @@ namespace D1
 
         private IEnumerator SendLogIn(byte[] reqJSON)
         {
-            yield return new WaitForSeconds(1f);
+            string url = WebManager.baseUrl + WebManager.logInRoute;
+            UnityWebRequest loginReq = new UnityWebRequest(url, "POST");
+            loginReq.uploadHandler = (UploadHandler)new UploadHandlerRaw(reqJSON);
+            loginReq.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            loginReq.SetRequestHeader("Content-Type", "application/json");
+            yield return loginReq.SendWebRequest();
+            if (loginReq.error != null)
+            {
+                LoginResponse resObj = new LoginResponse();
+                resObj.status = "error: " + loginReq.error;
+                reqOrigin.ReceiveResponse(resObj);
+                FinishProcess();
+            }
+            else
+            {
+                LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(loginReq.downloadHandler.text);
+                reqOrigin.ReceiveResponse(loginResponse);
+                FinishProcess();
+            }
         }
         public string LoginAttempt(string email, string pass, Screen origin)
         {
@@ -33,7 +57,7 @@ namespace D1
 
             if (!loginVerifier.IsLoginInputValid(email, pass))
             {
-                return "Error: Input data format is not valid";
+                return "Error: Invalid input";
             }
             else
             {

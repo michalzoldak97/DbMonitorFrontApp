@@ -11,6 +11,9 @@ namespace D1
         {
             globalSettings = GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalSettings>();
         }
+        public virtual void ReceiveResponse(LoginResponse res)
+        {
 
+        }
     }
 }
