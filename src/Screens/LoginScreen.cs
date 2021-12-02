@@ -11,6 +11,12 @@ namespace D1
         [SerializeField] private TMP_InputField emailInputField, passInputField;
         [SerializeField] private Button logInButton;
         [SerializeField] private TMP_Text warnText;
+        [SerializeField] private GameObject frameCloseAlert;
+
+        public void EnableCancelAlert()
+        {
+            frameCloseAlert.SetActive(true);
+        }
 
         public void OnFieldChanged()
         {
