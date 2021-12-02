@@ -7,13 +7,12 @@ namespace D1
     public class Screen : MonoBehaviour
     {
         protected GlobalSettings globalSettings;
+        protected ScreenManager screenManager;
         protected void InitialSetUp()
         {
-            globalSettings = GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalSettings>();
-        }
-        public virtual void ReceiveResponse(LoginResponse res)
-        {
-
+            GameObject sessionObj = GameObject.FindGameObjectWithTag("Player");
+            globalSettings = sessionObj.GetComponent<GlobalSettings>();
+            screenManager = sessionObj.GetComponent<ScreenManager>();
         }
     }
 }

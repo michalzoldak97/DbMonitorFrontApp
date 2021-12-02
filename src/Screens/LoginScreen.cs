@@ -34,6 +34,13 @@ namespace D1
             InitialSetUp();
             AreInputsFilled();
         }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Return) && AreInputsFilled())
+            {
+                LogInAttempt();
+            }
+        }
         private IEnumerator DisplayMessage(string msg)
         {
             warnText.text = msg;
@@ -52,7 +59,7 @@ namespace D1
                 Destroy(loginWeb);
             }
         }
-        public override void ReceiveResponse(LoginResponse res)
+        public void ReceiveResponse(LoginResponse res)
         {
             if (res.status == null || res.status.Split(':')[0] == "error")
             {
@@ -60,7 +67,9 @@ namespace D1
             }
             else
             {
+                globalSettings.SetToken(res.token);
                 StartCoroutine(DisplayMessage(res.status));
+                screenManager.SwitchScreen(Screens.Base);
             }
         }
     }

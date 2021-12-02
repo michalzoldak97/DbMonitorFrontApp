@@ -8,7 +8,7 @@ namespace D1
     public class LoginWeb : MonoBehaviour
     {
         private bool isLogInProgress = false;
-        private Screen reqOrigin;
+        private LoginScreen reqOrigin;
         private LoginVerifier loginVerifier = new LoginVerifier();
 
         private void FinishProcess()
@@ -48,7 +48,7 @@ namespace D1
                 FinishProcess();
             }
         }
-        public string LoginAttempt(string email, string pass, Screen origin)
+        public string LoginAttempt(string email, string pass, LoginScreen origin)
         {
             if (isLogInProgress)
                 return "Error: Login is in progress";

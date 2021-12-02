@@ -7,6 +7,7 @@ namespace D1
     public class GlobalSettings : MonoBehaviour
     {
         private static int targetFrameRate = 120;
+        public string token { get; private set; }
 
         private void SetQuality()
         {
@@ -20,6 +21,10 @@ namespace D1
         private void Start()
         {
             SetQuality();
+        }
+        public void SetToken(string toSet)
+        {
+            token = toSet;
         }
     }
 }
