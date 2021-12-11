@@ -5,17 +5,10 @@ using UnityEngine.Networking;
 
 namespace D1
 {
-    public class LoginWeb : MonoBehaviour
+    public class LoginWeb : WebScript
     {
-        private bool isLogInProgress = false;
         private LoginScreen reqOrigin;
         private LoginVerifier loginVerifier = new LoginVerifier();
-
-        private void FinishProcess()
-        {
-            isLogInProgress = false;
-            Destroy(this);
-        }
 
         private byte[] ParseInput(string email, string pass)
         {
@@ -39,21 +32,18 @@ namespace D1
                 LoginResponse resObj = new LoginResponse();
                 resObj.status = "error: " + loginReq.error;
                 reqOrigin.ReceiveResponse(resObj);
-                FinishProcess();
+                FinishWebProcess();
             }
-            else
-            {
-                LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(loginReq.downloadHandler.text);
-                reqOrigin.ReceiveResponse(loginResponse);
-                FinishProcess();
-            }
+            LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(loginReq.downloadHandler.text);
+            reqOrigin.ReceiveResponse(loginResponse);
+            FinishWebProcess();
         }
         public string LoginAttempt(string email, string pass, LoginScreen origin)
         {
-            if (isLogInProgress)
+            if (isActionInProgress)
                 return "Error: Login is in progress";
             else
-                isLogInProgress = true;
+                isActionInProgress = true;
 
             if (!loginVerifier.IsLoginInputValid(email, pass))
             {
